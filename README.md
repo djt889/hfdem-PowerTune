@@ -20,7 +20,7 @@
 | 手动Boost | 通过 KernelSU Actions 按钮手动切换，不会被自动控制覆盖 |
 | 兼容Eclipse | 不停止 mi_thermald，不修改 sconfig，与定制温控模块互不冲突 |
 
-## Scene 四种模式对应策略
+## Scene 接管 schedhorizon 调度后的四种模式对应策略
 
 | Scene模式 | GPU频率上限 | 温控Boost | 适用场景 |
 |-----------|-----------|----------|---------|
