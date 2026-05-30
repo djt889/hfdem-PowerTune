@@ -18,7 +18,7 @@ GPU_BOOST_ENABLED=0
 _get_time() { date "+%Y-%m-%d %H:%M:%S"; }
 _wval() { chmod 0644 "$2" 2>/dev/null; echo "$1" > "$2" 2>/dev/null; }
 _status() {
-    sed -i "s/^description=.*/description=hfdem PowerTune v2.3.0 | GPU: $1 | 温控: $2 | $3/" "$PROP" 2>/dev/null
+    sed -i "s/^description=.*/description=hfdem PowerTune v2.3.1 | GPU: $1 | 温控: $2 | $3/" "$PROP" 2>/dev/null
 }
 
 NUM_PWRLVL="$(cat $KGSL/num_pwrlevels 2>/dev/null)"
@@ -132,11 +132,12 @@ _set_mode() {
     _status "$gpu_label" "$thermal_label" "$t"
 }
 
-sleep 15
+while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 3; done
+sleep 5
 _set_mode "balance"
 
 while true; do
-    sleep 10
+    sleep 5
     CUR=$(cat /data/cur_powermode.txt 2>/dev/null)
     [ -z "$CUR" ] && sleep 30 && continue
     if [ "$CUR" != "$LAST" ]; then

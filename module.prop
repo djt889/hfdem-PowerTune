@@ -1,6 +1,6 @@
 id=hfdem_savemode
 name=hfdem PowerTune
-version=v2.3.0
-versionCode=20
+version=v2.3.1
+versionCode=21
 author=温柔浩
-description=hfdem PowerTune v2.3.0 | 搭配hfdem内核+schedhorizon使用 | GPU动态调频+温控Boost | 等待启动...
+description=hfdem PowerTune v2.3.1 | 搭配hfdem内核+schedhorizon使用 | GPU动态调频+温控Boost | 等待启动...
