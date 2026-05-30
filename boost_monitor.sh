@@ -96,7 +96,7 @@ _set_mode() {
             fi
             ;;
         balance)
-            _set_gpu "$MIN_PWRLVL" "$GPU_FREQ_BALANCE"
+            _set_gpu "$((MIN_PWRLVL * 2 / 3))" "$GPU_FREQ_BALANCE"
             gpu_label="均衡($((${GPU_FREQ_BALANCE}/1000000))MHz)"
             if [ ! -f "$MANUAL" ]; then
                 [ -f "$BOOST" ] && _boost_off
@@ -106,7 +106,7 @@ _set_mode() {
             fi
             ;;
         performance)
-            _set_gpu "3" "$GPU_FREQ_PERFORMANCE"
+            _set_gpu "$((MIN_PWRLVL / 3))" "$GPU_FREQ_PERFORMANCE"
             gpu_label="性能($((${GPU_FREQ_PERFORMANCE}/1000000))MHz)"
             if [ ! -f "$MANUAL" ]; then
                 [ -f "$BOOST" ] || _boost_on
