@@ -74,8 +74,8 @@ _set_mode() {
 
     case "$mode" in
         powersave)
-            _set_gpu_governor "80"
-            gpu_label="调频80%"
+            _set_gpu_governor "100"
+            gpu_label="调频100%"
             if [ ! -f "$MANUAL" ]; then
                 [ -f "$BOOST" ] && _boost_off
                 thermal_label="🔴 OFF"
