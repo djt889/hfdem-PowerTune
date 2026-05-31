@@ -15,19 +15,19 @@
 | 功能 | 说明 |
 |------|------|
 | 系统优化 | TCP参数调优、IO调度优化、内存管理优化、后台进程数限制 |
-| GPU动态调频 | 根据 Scene 四种模式自动调整 GPU 频率上限 |
-| 温控Boost | 游戏模式自动放宽温控阈值，退出自动恢复 |
+| GPU动态调频 | 参考Yuni内核，解锁GPU频率限制，通过mod_percent控制调频器激进度 |
+| 温控Boost | 极致模式自动放宽温控阈值到105°C，其他模式保持100°C |
 | 手动Boost | 通过 KernelSU Actions 按钮手动切换，不会被自动控制覆盖 |
 | 兼容Eclipse | 不停止 mi_thermald，不修改 sconfig，与定制温控模块互不冲突 |
 
 ## Scene 接管 schedhorizon 调度后的四种模式对应策略
 
-| Scene模式 | GPU频率上限 | 温控Boost | 适用场景 |
-|-----------|-----------|----------|---------|
-| **powersave** | 最低频 | OFF | 极致省电 |
-| **balance** | 中低频 | OFF | 日常使用 |
-| **performance** | 中高频 | ON | 轻度游戏/高性能需求 |
-| **fast** | 最高频 | ON | 重度游戏 |
+| Scene模式 | GPU调频 | 温控Boost | 适用场景 |
+|-----------|---------|----------|---------|
+| **powersave** | 80% | OFF (100°C) | 极致省电 |
+| **balance** | 100% | OFF (100°C) | 日常使用 |
+| **performance** | 120% | OFF (100°C) | 轻度游戏/高性能需求 |
+| **fast** | 120% | ON (105°C) | 重度游戏 |
 
 ## 安装方法
 
@@ -54,11 +54,11 @@
 刷入重启后，KernelSU 管理器中的模块描述会实时显示：
 
 ```
-hfdem PowerTune v2.3.0 | GPU: 省电(221MHz) | 温控: 🔴 OFF | 2026-05-28 20:15:30
+hfdem PowerTune v2.3.2 | GPU: 调频80% | 温控: 🔴 OFF | 2026-05-28 20:15:30
 ```
 
-- GPU：当前频率档位
-- 温控：Boost状态（🔴 OFF / 🟢 ON / 手动覆盖）
+- GPU：当前调频器百分比（80%/100%/120%）
+- 温控：Boost状态（🔴 OFF 100°C / 🟢 ON 105°C / 手动覆盖）
 - 时间：最后一次模式切换时间
 
 ## 注意事项
@@ -72,6 +72,8 @@ hfdem PowerTune v2.3.0 | GPU: 省电(221MHz) | 温控: 🔴 OFF | 2026-05-28 20:
 
 | 版本 | 更新内容 |
 |------|---------|
+| v2.3.2 | 参考Yuni重构GPU控制：解锁频率限制+mod_percent四档调频；温控只在极致模式ON；开机读取当前模式；版本号动态获取 |
+| v2.3.1 | GPU动态频率范围+开机读取当前模式+兼容任何频率表 |
 | v2.3.0 | GPU动态调频改为运行时读取频率表；刷入时可选开启；powersave和balance分开处理 |
 | v2.2.0 | 改名 PowerTune；修复 devfreq max_freq 限制；移除 sconfig 管理避免与 Eclipse 冲突；添加手动Boost覆盖机制 |
 | v2.1.0 | GPU动态调频按Scene模式控制；移除 mi_thermald 停止；install.sh 兼容 KernelSU |
