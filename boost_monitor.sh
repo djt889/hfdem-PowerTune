@@ -17,12 +17,11 @@ GPU_BOOST_ENABLED=0
 
 _get_time() { date "+%Y-%m-%d %H:%M:%S"; }
 _wval() { chmod 0644 "$2" 2>/dev/null; echo "$1" > "$2" 2>/dev/null; }
+_get_ver() { grep "^version=" "$PROP" 2>/dev/null | cut -d= -f2; }
 _status() {
-    sed -i "s/^description=.*/description=hfdem PowerTune v2.3.1 | GPU: $1 | 温控: $2 | $3/" "$PROP" 2>/dev/null
+    local ver=$(_get_ver)
+    sed -i "s/^description=.*/description=hfdem PowerTune $ver | GPU: $1 | 温控: $2 | $3/" "$PROP" 2>/dev/null
 }
-
-NUM_PWRLVL="$(cat $KGSL/num_pwrlevels 2>/dev/null)"
-MIN_PWRLVL="$((NUM_PWRLVL - 1))"
 
 read_freq_table() {
     local raw=""
@@ -39,23 +38,42 @@ read_freq_table() {
 
 if read_freq_table; then
     _max_idx=$((FREQ_COUNT - 1))
+    _idx_2_3=$(( _max_idx * 2 / 3 ))
+    _idx_1_3=$(( _max_idx / 3 ))
     GPU_FREQ_POWERSAVE=${FREQ_TABLE[$_max_idx]}
-    GPU_FREQ_BALANCE=${FREQ_TABLE[$((_max_idx * 2 / 3))]}
-    GPU_FREQ_PERFORMANCE=${FREQ_TABLE[$((_max_idx / 3))]}
+    GPU_FREQ_BALANCE=${FREQ_TABLE[$_idx_2_3]}
+    GPU_FREQ_PERFORMANCE=${FREQ_TABLE[$_idx_1_3]}
     GPU_FREQ_FAST=${FREQ_TABLE[0]}
+    GPU_MIN_POWERSAVE=${FREQ_TABLE[$_max_idx]}
+    GPU_MIN_BALANCE=${FREQ_TABLE[$_max_idx]}
+    GPU_MIN_PERFORMANCE=${FREQ_TABLE[$_idx_2_3]}
+    GPU_MIN_FAST=${FREQ_TABLE[$_idx_1_3]}
+    PWR_MAX_POWERSAVE=$_max_idx
+    PWR_MAX_BALANCE=$_max_idx
+    PWR_MAX_PERFORMANCE=$_idx_2_3
+    PWR_MAX_FAST=0
+    PWR_MIN_POWERSAVE=$_max_idx
+    PWR_MIN_BALANCE=$_idx_2_3
+    PWR_MIN_PERFORMANCE=$_idx_1_3
+    PWR_MIN_FAST=0
 else
-    GPU_FREQ_POWERSAVE=221000000
-    GPU_FREQ_BALANCE=370000000
-    GPU_FREQ_PERFORMANCE=550000000
-    GPU_FREQ_FAST=690000000
+    t=$(_get_time)
+    echo "[$t] 无法读取GPU频率表，跳过GPU控制" >> "$LOG"
+    GPU_BOOST_ENABLED=0
 fi
 
 _set_gpu() {
     local max_pwr="$1"
     local max_freq="$2"
+    local min_pwr="$3"
+    local min_freq="$4"
     _wval "$max_pwr" "$KGSL/max_pwrlevel"
+    _wval "$min_pwr" "$KGSL/min_pwrlevel"
     for df in /sys/class/devfreq/*kgsl-3d0; do
-        [ -d "$df" ] && _wval "$max_freq" "$df/max_freq"
+        [ -d "$df" ] && {
+            _wval "$max_freq" "$df/max_freq"
+            _wval "$min_freq" "$df/min_freq"
+        }
     done
 }
 
@@ -84,10 +102,31 @@ _set_mode() {
     local gpu_label=""
     local thermal_label=""
 
+    if [ "$GPU_BOOST_ENABLED" = "1" ]; then
+        case "$mode" in
+            powersave)
+                _set_gpu "$PWR_MAX_POWERSAVE" "$GPU_FREQ_POWERSAVE" "$PWR_MIN_POWERSAVE" "$GPU_MIN_POWERSAVE"
+                gpu_label="省电($((${GPU_FREQ_POWERSAVE}/1000000))MHz)"
+                ;;
+            balance)
+                _set_gpu "$PWR_MAX_BALANCE" "$GPU_FREQ_BALANCE" "$PWR_MIN_BALANCE" "$GPU_MIN_BALANCE"
+                gpu_label="均衡($((${GPU_MIN_BALANCE}/1000000))-$((${GPU_FREQ_BALANCE}/1000000))MHz)"
+                ;;
+            performance)
+                _set_gpu "$PWR_MAX_PERFORMANCE" "$GPU_FREQ_PERFORMANCE" "$PWR_MIN_PERFORMANCE" "$GPU_MIN_PERFORMANCE"
+                gpu_label="性能($((${GPU_MIN_PERFORMANCE}/1000000))-$((${GPU_FREQ_PERFORMANCE}/1000000))MHz)"
+                ;;
+            fast)
+                _set_gpu "$PWR_MAX_FAST" "$GPU_FREQ_FAST" "$PWR_MIN_FAST" "$GPU_MIN_FAST"
+                gpu_label="极致($((${GPU_MIN_FAST}/1000000))-$((${GPU_FREQ_FAST}/1000000))MHz)"
+                ;;
+        esac
+    else
+        gpu_label="未启用"
+    fi
+
     case "$mode" in
-        powersave)
-            _set_gpu "$MIN_PWRLVL" "$GPU_FREQ_POWERSAVE"
-            gpu_label="省电($((${GPU_FREQ_POWERSAVE}/1000000))MHz)"
+        powersave|balance)
             if [ ! -f "$MANUAL" ]; then
                 [ -f "$BOOST" ] && _boost_off
                 thermal_label="🔴 OFF"
@@ -95,29 +134,7 @@ _set_mode() {
                 [ -f "$BOOST" ] && thermal_label="🟢 ON(手动)" || thermal_label="🔴 OFF(手动)"
             fi
             ;;
-        balance)
-            _set_gpu "$MIN_PWRLVL" "$GPU_FREQ_BALANCE"
-            gpu_label="均衡($((${GPU_FREQ_BALANCE}/1000000))MHz)"
-            if [ ! -f "$MANUAL" ]; then
-                [ -f "$BOOST" ] && _boost_off
-                thermal_label="🔴 OFF"
-            else
-                [ -f "$BOOST" ] && thermal_label="🟢 ON(手动)" || thermal_label="🔴 OFF(手动)"
-            fi
-            ;;
-        performance)
-            _set_gpu "3" "$GPU_FREQ_PERFORMANCE"
-            gpu_label="性能($((${GPU_FREQ_PERFORMANCE}/1000000))MHz)"
-            if [ ! -f "$MANUAL" ]; then
-                [ -f "$BOOST" ] || _boost_on
-                thermal_label="🟢 ON"
-            else
-                [ -f "$BOOST" ] && thermal_label="🟢 ON(手动)" || thermal_label="🔴 OFF(手动)"
-            fi
-            ;;
-        fast)
-            _set_gpu "0" "$GPU_FREQ_FAST"
-            gpu_label="极致($((${GPU_FREQ_FAST}/1000000))MHz)"
+        performance|fast)
             if [ ! -f "$MANUAL" ]; then
                 [ -f "$BOOST" ] || _boost_on
                 thermal_label="🟢 ON"
@@ -134,7 +151,14 @@ _set_mode() {
 
 while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 3; done
 sleep 5
-_set_mode "balance"
+
+CUR=""
+while [ -z "$CUR" ]; do
+    CUR=$(cat /data/cur_powermode.txt 2>/dev/null)
+    [ -z "$CUR" ] && sleep 5
+done
+LAST="$CUR"
+_set_mode "$LAST"
 
 while true; do
     sleep 5

@@ -10,8 +10,10 @@ PROP="$MODDIR/module.prop"
 
 _get_time() { date "+%Y-%m-%d %H:%M:%S"; }
 _wval() { chmod 0644 "$2" 2>/dev/null; echo "$1" > "$2" 2>/dev/null; }
+_get_ver() { grep "^version=" "$PROP" 2>/dev/null | cut -d= -f2; }
 _status() {
-    sed -i "s/^description=.*/description=hfdem PowerTune v2.2.0 | 温控: $1 | 手动覆盖 | $2/" "$PROP" 2>/dev/null
+    local ver=$(_get_ver)
+    sed -i "s/^description=.*/description=hfdem PowerTune $ver | 温控: $1 | 手动 | $2/" "$PROP" 2>/dev/null
 }
 
 _boost_on() {
