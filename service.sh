@@ -41,7 +41,6 @@ init_zram_per() {
 }
 
 init_zram() {
-    grep -q zram /proc/swaps && return
     init_zram_per "0" "zstd"
 }
 
