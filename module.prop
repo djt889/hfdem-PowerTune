@@ -1,6 +1,6 @@
 id=hfdem_savemode
 name=hfdem PowerTune
-version=v2.4.3-beta
-versionCode=25
+version=v2.4.4-beta
+versionCode=26
 author=温柔浩
-description=hfdem PowerTune v2.4.3-beta | 搭配hfdem内核+schedhorizon使用 | GPU动态调频+温控Boost | zram zstd压缩 | 等待启动...
+description=hfdem PowerTune v2.4.4-beta | 搭配hfdem内核+schedhorizon使用 | GPU动态调频+温控Boost | zram zstd压缩 | 等待启动...

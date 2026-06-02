@@ -1,5 +1,9 @@
 # hfdem PowerTune 更新日志
 
+## v2.4.4-beta
+- 删除 GPU force_clk_on/force_no_nap/force_rail_on/bcl 参数，解决打开应用瞬时功耗高的问题
+- GPU 恢复可进入低功耗状态
+
 ## v2.4.3-beta
 - 删除 init_cpu_freq，解决打开应用瞬时功耗高的问题
 - 保留 init_bus_dcvs，确保游戏数据吞吐
