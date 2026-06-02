@@ -51,7 +51,7 @@ init_mem() {
     write_val "150" /proc/sys/vm/watermark_scale_factor
     write_val "15000" /proc/sys/vm/watermark_boost_factor
     write_val "1" /proc/sys/vm/overcommit_memory
-    write_val "1" /proc/sys/vm/swappiness
+    write_val "60" /proc/sys/vm/swappiness
     write_val "65536" /proc/sys/vm/min_free_kbytes
     write_val "5" /proc/sys/vm/dirty_ratio
     write_val "2" /proc/sys/vm/dirty_background_ratio
@@ -59,7 +59,6 @@ init_mem() {
     [ -f /sys/kernel/mm/lru_gen/enabled ] && write_val "0x0007" /sys/kernel/mm/lru_gen/enabled
     [ -f /sys/kernel/mm/lru_gen/min_ttl_ms ] && write_val "1000" /sys/kernel/mm/lru_gen/min_ttl_ms
     [ -f /sys/module/pandora_config/parameters/enable_mm_vhs ] && write_val "Y" /sys/module/pandora_config/parameters/enable_mm_vhs
-    init_zram
     init_thp
 }
 
@@ -205,6 +204,8 @@ init_sched() {
 }
 
 nohup sh "$MODDIR/boost_monitor.sh" "$MODDIR" &
+
+init_zram
 
 wait_until_boot_complete
 wait_until_login
