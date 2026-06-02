@@ -23,6 +23,15 @@ jobs:
         run: |
           zip -r "hfdem-PowerTune-${{ steps.version.outputs.VERSION }}.zip" . -x ".git/*" -x ".github/*" -x "*.md" -x ".gitignore"
 
+      - name: Check prerelease
+        id: prerelease
+        run: |
+          if echo "${{ steps.version.outputs.VERSION }}" | grep -qiE "(beta|alpha|rc|pre|dev)"; then
+            echo "IS_PRERELEASE=true" >> $GITHUB_OUTPUT
+          else
+            echo "IS_PRERELEASE=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -38,4 +47,4 @@ jobs:
             3. 重启生效
           files: hfdem-PowerTune-${{ steps.version.outputs.VERSION }}.zip
           draft: false
-          prerelease: false
+          prerelease: ${{ steps.prerelease.outputs.IS_PRERELEASE == 'true' }}
