@@ -28,6 +28,12 @@ jobs:
         run: |
           DESC=$(grep '^description=' module.prop | cut -d'=' -f2-)
           echo "DESCRIPTION=$DESC" >> $GITHUB_OUTPUT
+          # 从 CHANGELOG.md 读取当前版本的更新内容
+          VERSION="${{ steps.version.outputs.VERSION }}"
+          CHANGELOG=$(sed -n "/^## $VERSION$/,/^## /{ /^## /d; p; }" CHANGELOG.md)
+          echo "CHANGELOG<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
 
       - name: Check prerelease
         id: prerelease
@@ -46,6 +52,9 @@ jobs:
             ## hfdem PowerTune ${{ steps.version.outputs.VERSION }}
 
             ${{ steps.desc.outputs.DESCRIPTION }}
+
+            ### 更新内容
+            ${{ steps.desc.outputs.CHANGELOG }}
 
             ### 安装方法
             1. 下载 `hfdem-PowerTune-${{ steps.version.outputs.VERSION }}.zip`
