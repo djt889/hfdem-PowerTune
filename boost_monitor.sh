@@ -39,6 +39,23 @@ if [ "$1" = "w" ] || [ "$1" = "c" ] || [ "$1" = "y" ] || [ "$1" = "update" ] || 
             grep -Eq "cpu|gpu" "$i/type" 2>/dev/null && _wval "105000" "$i/trip_point_2_temp"
         done
         _wval "10" /sys/class/thermal/thermal_message/sconfig
+        
+        # ====== 补全：拉满 DCVS (DDRQOS) ======
+        local BUS_DIR="/sys/devices/system/cpu/bus_dcvs"
+        [ -d "$BUS_DIR/DDRQOS" ] && {
+            _lock_val "1" "$BUS_DIR/DDRQOS/hw_max_freq"
+            _lock_val "1" "$BUS_DIR/DDRQOS/boost_freq"
+            _lock_val "1" "$BUS_DIR/DDRQOS/hw_min_freq"
+        }
+        
+        # ====== 补全：拉满 UFS ======
+        for df in /sys/class/devfreq/*ufs*; do
+            [ -d "$df" ] && {
+                [ -f "$df/max_freq" ] && _wval "2147483646" "$df/max_freq"
+                [ -f "$df/min_freq" ] && _wval "2147483646" "$df/min_freq"
+            }
+        done
+
         touch "$BOOST"
         local t=$(_get_time)
         echo "[$t] Boost ON" >> "$LOG"
@@ -50,6 +67,16 @@ if [ "$1" = "w" ] || [ "$1" = "c" ] || [ "$1" = "y" ] || [ "$1" = "update" ] || 
             grep -Eq "cpu|gpu" "$i/type" 2>/dev/null && _wval "100000" "$i/trip_point_2_temp"
         done
         _wval "0" /sys/class/thermal/thermal_message/sconfig
+        
+        # ====== 补全：恢复 DCVS (DDRQOS) ======
+        local BUS_DIR="/sys/devices/system/cpu/bus_dcvs"
+        [ -d "$BUS_DIR/DDRQOS" ] && _wval "0" "$BUS_DIR/DDRQOS/min_freq"
+        
+        # ====== 补全：恢复 UFS ======
+        for df in /sys/class/devfreq/*ufs*; do
+            [ -d "$df" ] && [ -f "$df/min_freq" ] && _wval "0" "$df/min_freq"
+        done
+
         rm -f "$BOOST"
         local t=$(_get_time)
         echo "[$t] Boost OFF" >> "$LOG"
@@ -59,11 +86,21 @@ if [ "$1" = "w" ] || [ "$1" = "c" ] || [ "$1" = "y" ] || [ "$1" = "update" ] || 
         local mode="$1"
         local gpu_label=""
         local thermal_label=""
+        
+        # 定义 KGSL 路径
+        local KGSL="/sys/class/kgsl/kgsl-3d0"
 
         case "$mode" in
             powersave|balance)
                 _set_gpu_governor "100"
                 gpu_label="调频100%"
+                
+                # ====== 新增：日常和省电模式下，强制压制休眠锁 ======
+                _lock_val "0" "$KGSL/force_clk_on"
+                _lock_val "0" "$KGSL/force_no_nap"
+                _lock_val "0" "$KGSL/force_rail_on"
+                _wval "1" "$KGSL/thermal_pwrlevel"
+                
                 if [ ! -f "$MANUAL" ]; then
                     [ -f "$BOOST" ] && _boost_off
                     thermal_label="🔴 OFF"
@@ -74,6 +111,13 @@ if [ "$1" = "w" ] || [ "$1" = "c" ] || [ "$1" = "y" ] || [ "$1" = "update" ] || 
             performance|fast)
                 _set_gpu_governor "120"
                 gpu_label="调频120%"
+                
+                # ====== 新增：性能模式下，放开限制
+                _lock_val "0" "$KGSL/thermal_pwrlevel"
+                _wval "1" "$KGSL/force_rail_on"
+                _wval "1" "$KGSL/force_clk_on" 
+                _wval "1" "$KGSL/force_no_nap"
+                
                 if [ ! -f "$MANUAL" ]; then
                     [ "$mode" = "fast" ] && { [ -f "$BOOST" ] || _boost_on; thermal_label="🟢 ON"; }
                     [ "$mode" = "performance" ] && { [ -f "$BOOST" ] && _boost_off; thermal_label="🔴 OFF"; }
@@ -128,10 +172,10 @@ _set_gpu_unlock() {
     _lock_val "$MIN_PWRLVL" "$KGSL/default_pwrlevel"
     _lock_val "0" "$KGSL/thermal_pwrlevel"
     _lock_val "0" "$KGSL/throttling"
-    [ -f "$KGSL/force_clk_on" ] && _wval "0" "$KGSL/force_clk_on"
-    [ -f "$KGSL/force_no_nap" ] && _wval "0" "$KGSL/force_no_nap"
-    [ -f "$KGSL/force_rail_on" ] && _wval "0" "$KGSL/force_rail_on"
-    [ -f "$KGSL/bcl" ] && _wval "0" "$KGSL/bcl"
+    [ -f "$KGSL/force_clk_on" ] && _lock_val "0" "$KGSL/force_clk_on"
+    [ -f "$KGSL/force_no_nap" ] && _lock_val "0" "$KGSL/force_no_nap"
+    [ -f "$KGSL/force_rail_on" ] && _lock_val "0" "$KGSL/force_rail_on"
+    [ -f "$KGSL/bcl" ] && _lock_val "0" "$KGSL/bcl"
     [ -f "$KGSL/max_gpu_clk" ] && _lock_val "2147483647" "$KGSL/max_gpu_clk"
     [ -f "$KGSL/max_clock_mhz" ] && _lock_val "2147483647" "$KGSL/max_clock_mhz"
     [ -f "$KGSL/min_clock_mhz" ] && _lock_val "0" "$KGSL/min_clock_mhz"
@@ -145,7 +189,7 @@ _set_gpu_unlock() {
     done
 }
 
-while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 5; done
+while [ "$(getprop sys.boot_completed)" != "1" ]; do sleep 3; done
 sleep 5
 
 _set_gpu_unlock
