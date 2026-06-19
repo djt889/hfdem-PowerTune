@@ -1,6 +1,7 @@
 # hfdem PowerTune
 
-基于 [hfdem 内核](https://github.com/hfdem/android_gki_kernel_5.15_common.git)及 schedhorizon 调度的功耗管理模块。
+基于 [hfdem 内核](https://github.com/hfdem/android_gki_kernel_5.15_common.git)及 schedhorizon 调度的功耗管理模块。经测试可用在Jianke等没有附加模块的内核上。
+理论上只基于[schedhorizon](https://github.com/hfdem/android_gki_kernel_5.15_common/releases)调度。
 
 ## 适用环境
 
@@ -37,7 +38,7 @@
 
 ## 安装方法
 
-1. 从 [Releases](https://github.com/wenrouhao/hfdem-PowerTune/releases) 下载最新版 ZIP
+1. 从 [Releases](https://github.com/djt889/hfdem-PowerTune/releases) 下载最新版 ZIP
 2. 打开 KernelSU 管理器
 3. 选择「模块」→「从本地安装」
 4. 选择下载的 ZIP 文件
