@@ -1,0 +1,280 @@
+{
+  "game_booster": {
+    "booster_enable": true,
+    "cpuset_enable": false,
+    "tuner_enable": true,
+    "qsync_enable": false,
+    "monitor": {
+      "monitor_enable": false,
+      "analytics_enable": false,
+      "default_interval": 2
+    },
+    "support_display_refresh_rates": [
+      60,
+      120
+    ],
+    "low_display_refresh_rate_scenes": [
+      3
+    ],
+    "support_dynamic_refresh_rate_games": [
+      "com.tencent.tmgp.sgame",
+      "com.tencent.tmgp.sgamece",
+      "com.tencent.ig",
+      "com.tencent.tmgp.speedmobile",
+      "com.tencent.lolm",
+      "com.tencent.tmgp.codev",
+      "com.tencent.tmgp.pubgmhd"
+    ],
+    "support_ysre": true,
+    "predownload_enable": true,
+    "mqs_enhance_list": [
+      "com.miHoYo.hkrpg:60#default",
+      "com.miHoYo.Yuanshen:60#default",
+      "com.miHoYo.ys.mi:60#default",
+      "com.miHoYo.ys.bilibili:60#default",
+      "com.miHoYo.GenshinImpact:60#default"
+    ],
+    "support_predownload_app_list": [
+      "com.tencent.tmgp.pubgmhd",
+      "com.tencent.tmgp.sgame#1",
+      "com.tencent.tmgp.sgamece#1"
+    ],
+    "background_freeze_enable": true,
+    "background_freeze_whitelist": [
+      "com.xiaomi.joyose",
+      "com.miui.powerkeeper",
+      "com.xiaomi.migameservice",
+      "mcd",
+      "com.xiaomi.gamecenter.sdk.service"
+    ],
+    "support_highfps_app": [
+      "com.miui.tsmclient:120",
+      "com.tencent.jkchess:120",
+      "com.tencent.tmgp.dfm:120",
+      "com.tencent.tmgp.gnyx:90",
+      "com.tencent.nbn:120",
+      "com.tencent.tmgp.sgame:120",
+      "com.tencent.tmgp.sgamece:120",
+      "com.activision.callofduty.shooter:120",
+      "com.netease.lztg1.mi:120",
+      "com.netease.lztg:120",
+      "com.tencent.tmgp.cf:120",
+      "com.pwrd.xxajh.laohu:120",
+      "com.pwrd.xxajh.mi:120",
+      "com.miHoYo.bh3.mi:90",
+      "com.miHoYo.enterprise.NGHSoD:90",
+      "com.tencent.af:120",
+      "com.tencent.tmgp.pubgmhd:120",
+      "com.tencent.tmgp.codev:120",
+      "com.tencent.tmgp.speedmobile:120",
+      "com.tencent.YiRen:120",
+      "com.tencent.KiHan:120",
+      "com.tencent.ig:90",
+      "com.tencent.tmgp.cod:120",
+      "com.tencent.tmgp.codty:120",
+      "com.denachina.g13002010.mi:120",
+      "com.denachina.g13002010.denacn:120",
+      "com.tencent.lolm:120",
+      "com.supercell.clashofclans.mi:120",
+      "com.tencent.tmgp.supercell.clashofclans:120",
+      "com.pwrd.hotta.laohu:90",
+      "com.hottagames.hotta.mi:90",
+      "com.netease.moba.mi:90",
+      "com.netease.moba:90",
+      "com.youzu.bs.mi:120",
+      "com.youzu.bs:120",
+      "com.tencent.tmgp.supercell.brawlstars:120",
+      "com.tencent.mf.uam:120",
+      "com.tencent.mf.uamty:120",
+      "com.xd.rotaeno.googleplay:120",
+      "com.kurogame.mingchao.beta:120",
+      "com.kurogame.mingchao:120",
+      "com.hypergryph.endfield:120",
+      "com.tencent.tmgp.nz:120",
+      "com.tencent.game.rhythmmaster:120"
+    ],
+    "scale_app_enable": true,
+    "support_scale_app_list": [
+      "com.miHoYo.enterprise.NGHSoD",
+      "com.happyelements.AndroidAnimal",
+      "cn.jj",
+      "com.tencent.tmgp.speedmobile",
+      "com.blizzard.wtcg.hearthstone",
+      "com.tencent.peng",
+      "com.tencent.qqgame.xq",
+      "com.qqgame.happymj",
+      "com.tencent.tmgp.tstl",
+      "com.tencent.wmsj",
+      "com.tencent.swy",
+      "com.tencent.tmgp.qqx5",
+      "com.tencent.tmgp.wec",
+      "com.tencent.shootgame",
+      "com.tencent.tmgp.vgame",
+      "com.tencent.tmgp.mt4",
+      "com.tencent.woool3d",
+      "com.tencent.xishanju.xj4",
+      "com.tencent.tmgp.redfox",
+      "com.tencent.wdqy",
+      "com.tencent.YiRen",
+      "com.tencent.tmgp.ylm",
+      "com.tencent.yoozoo.got.wintercoming",
+      "com.tencent.hxh",
+      "com.tencent.tmgp.sskgame",
+      "com.minitech.miniworld",
+      "com.bairimeng.dmmdzz",
+      "com.netease.tom",
+      "com.supercell.clashofclans.kunlun",
+      "com.aligames.sgzzlb",
+      "com.outfit7.talkingtomgoldrun.bd",
+      "com.bf.sgs.hdexp",
+      "com.lilithgames.hgame.cn",
+      "com.supercell.clashroyale.kunlun",
+      "com.ChillyRoom.DungeonShooter",
+      "com.wepie.snake",
+      "com.ledou.mhhy",
+      "com.gbits.atm.leiting",
+      "com.shiyi.bkby",
+      "com.jiguang.dldl.sy37",
+      "com.qidian.dldl.official",
+      "com.papegames.nn4.cn",
+      "com.wanmei.zhuxian.laohu",
+      "com.qhjx.snk.sy371",
+      "com.szxchd.yqxx.dodsdk",
+      "com.sqw.sssf",
+      "com.hermes.bgame",
+      "com.netease.lx7",
+      "com.taomee.huah",
+      "com.soulgame.shokudo.kuaishou"
+    ],
+    "migl_settings": {
+      "enable": true,
+      "game_params": [
+        {
+          "game": "yuanshen",
+          "force_source_crop": "400#ignore;ignore;1620,1080,2160,1440&419#ignore;ignore;1620,1080,2160,1440&320#ignore;ignore;1620,1080,2160,1440",
+          "game_cmdlines": [
+            "com.miHoYo.Yuanshen",
+            "com.miHoYo.GenshinImpact",
+            "com.miHoYo.ys.mi",
+            "com.miHoYo.ys.bilibili"
+          ],
+          "params": {
+            "ys_transfer_recognize": "1",
+            "ys_launch_recognize": "1",
+            "tex_size_v3": [
+              {
+                "max_resolution_80p": "1080x720",
+                "tex_size_config_re": "1:1260x840;2:1830x1220;3:2160x1440;4:2160x1440;5:2160x1440",
+                "post_process_high": "1260x840;1080x720;840x560;720x480",
+                "post_process_low": "1080x720;840x560;720x480;600x400",
+                "max_resolution": "1620x1080;1260x840"
+              }
+            ]
+          },
+          "force_source_crop_re": "1:ignore;2:1620,1080,1830,1220;3:1620,1080,2160,1440;4:1620,1080,2160,1440;5:1620,1080,2160,1440"
+        },
+        {
+          "game": "media-app",
+          "game_cmdlines": [
+            "com.tencent.qqlive",
+            "com.ss.android.ugc.aweme",
+            "com.ss.android.ugc.aweme:push",
+            "com.ss.android.ugc.aweme:sandboxed_process1",
+            "com.netease.cloudmusic",
+            "tv.danmaku.bili"
+          ],
+          "xrender_config": {
+            "support_common_module": []
+          }
+        },
+        {
+          "game": "pubg",
+          "force_source_crop": "400#ignore;ignore;1616,1080,2424,1620&419#ignore;ignore;1616,1080,2424,1620&320#ignore;ignore;1616,1080,2424,1620",
+          "irr": {
+            "size": "1616x1080;1.5",
+            "reflection": "18551;imageAtomicMax;r32ui,binding=0|18241;imageStore;rgba16f,binding=0;r32ui,binding=1",
+            "photoParams": "DT_BG_zhanji1024x549;35907;6403;6405",
+            "drawUbo": "48;0;48",
+            "colorLabel": "SceneColorMobile",
+            "viewUbo": "2976;1952;32;576,64,15360,12913,8,0"
+          },
+          "game_cmdlines": [
+            "com.tencent.tmgp.pubgmhd"
+          ],
+          "params": {
+            "tex_param_anisotropy": "1"
+          }
+        },
+        {
+          "game": "sgame",
+          "game_cmdlines": [
+            "com.tencent.tmgp.sgame"
+          ],
+          "xrender_config": {
+            "support_common_module": [],
+            "checkMainInfo": "1;UnityGfx.*"
+          }
+        },
+        {
+          "game": "hkrpg",
+          "game_cmdlines": [
+            "com.miHoYo.hkrpg"
+          ],
+          "params": {
+            "hkrpg_scene_recognize": "1"
+          }
+        }
+      ]
+    },
+    "booster_config": {
+      "default_config": [],
+      "scene_config": [
+        {
+          "scene_id": 10001,
+          "scene_name": "foreground",
+          "end": [
+            {
+              "permission": "root",
+              "cmd": "sys/module/perfmgr/parameters/perfmgr_enable#0"
+            },
+            {
+              "permission": "root",
+              "cmd": "sys/devices/system/cpu/cpu0/cpufreq/walt/target_loads#0"
+            }
+          ],
+          "booster": [
+            {
+              "permission": "root",
+              "cmd": "sys/module/perfmgr/parameters/perfmgr_enable#1"
+            },
+            {
+              "permission": "root",
+              "cmd": "sys/devices/system/cpu/cpufreq/policy0/walt/target_loads#-5 1209600:-10 1459200:-14"
+            }
+          ]
+        },
+        {
+          "scene_id": 1004,
+          "scene_name": "target_fps_update",
+          "booster": [
+            {
+              "permission": "root",
+              "cmd": "sys/module/perfmgr/parameters/perfmgr_enable#1"
+            },
+            {
+              "permission": "root",
+              "cmd": "sys/devices/system/cpu/cpufreq/policy0/walt/target_loads#-5 1209600:-10 1459200:-14"
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "header": {
+    "version": "official_2047123101",
+    "network_improve": true,
+    "support_wifi_ant_swap": true,
+    "index_enable": true,
+    "mqs_enable": true
+  }
+}

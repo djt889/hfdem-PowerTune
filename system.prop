@@ -27,6 +27,8 @@ ro.lmk.swap_free_low_percentage=0
 ro.lmk.swap_util_max=100
 ro.lmk.use_new_strategy=1
 ro.lmk.use_psi=1
+ro.sys.fw.bg_apps_limit=128
+ro.vendor.qti.sys.fw.bg_apps_limit=128
 
 # AppCompact
 persist.sys.use_boot_compact=false

@@ -9,7 +9,7 @@ persist.sys.advanced_visual_release=4
 persist.sys.background_blur_supported=true
 persist.sys.background_blur_version=2
 ro.launcher.blur.appLaunch=1
-ro.sf.blurs_are_expensive=false
+ro.sf.blurs_are_expensive=0
 debug.sysui.display_notification_shadow=1
 
 # Memory Management
@@ -19,8 +19,8 @@ persist.miui.extm.enable=false
 persist.sys.memory_standard.enable=false
 persist.sys.mfz.enable=false
 persist.sys.min.swap.free=false
-persist.sys.miui.resident.app.count=65535
-persist.sys.mms.bg_apps_limit=65535
+persist.sys.miui.resident.app.count=256
+persist.sys.mms.bg_apps_limit=256
 persist.sys.mms.compact_enable=false
 persist.sys.mms.enable=false
 persist.sys.mms.single_compact_enable=false
