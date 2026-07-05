@@ -1,7 +1,7 @@
 # hfdem PowerTune
 
 基于 [hfdem 内核](https://github.com/hfdem/android_gki_kernel_5.15_common.git)及 schedhorizon 调度的功耗管理模块。经测试可用在Jianke等没有附加模块的内核上。
-理论上只基于[schedhorizon](https://github.com/hfdem/android_gki_kernel_5.15_common/releases)调度。
+理论上只基于[schedhorizon](https://github.com/hfdem/android_gki_kernel_5.15_common/releases)还有新增支持CTS调度。
 
 ## 适用环境
 
@@ -75,17 +75,8 @@ hfdem PowerTune v2.3.2 | GPU: 调频100% | 温控: 🔴 OFF | 2026-05-28 20:15:3
 - 不会停止 mi_thermald，与 Eclipse 定制温控模块兼容
 - Boost 日志保存在模块目录的 `boost.log` 中
 
-## 版本历史
-
-| 版本 | 更新内容 |
-|------|---------|
-| v2.4.0 | 全面优化：新增CPU优化(corectl/cpuset/smp_affinity/perfhal/LPM/PELT)、总线优化(bus_dcvs)、内存优化(swappiness/min_free_kbytes)、GPU补充(force_clk_on/force_no_nap/bcl/max_gpu_clk)；删除空的post-fs-data.sh；修复sconfig一致性；修复init_thp逻辑；手动Boost补充DCVS/UFS/GPU Governor |
-| v2.3.1 | GPU动态频率范围+开机读取当前模式+兼容任何频率表 |
-| v2.3.0 | GPU动态调频改为运行时读取频率表；刷入时可选开启；powersave和balance分开处理 |
-| v2.2.0 | 改名 PowerTune；修复 devfreq max_freq 限制；移除 sconfig 管理避免与 Eclipse 冲突；添加手动Boost覆盖机制 |
-| v2.1.0 | GPU动态调频按Scene模式控制；移除 mi_thermald 停止；install.sh 兼容 KernelSU |
-| v2.0.0 | 初始版本，基于 hfdem 省电补丁 |
 
 ## 作者
 
-温柔浩
+原作者：[温柔浩](https://github.com/wenrouhao)
+修改者：[djt889](https://github.com/djt889)
