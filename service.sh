@@ -92,7 +92,11 @@ init_mem() {
     write_val "1" /proc/sys/vm/watermark_boost_factor
 
     write_val "1" /proc/sys/vm/overcommit_memory
-    write_val "35" /proc/sys/vm/swappiness
+    write_val "1" /proc/sys/vm/swappiness
+
+    # MGLRU：swappiness=1 时需配合 MGLRU 发挥效果
+    # swappiness 只是 hint，实际回收由 MGLRU 的 refault/evict 反馈决定
+    write_val "3" /sys/kernel/mm/lru_gen/enabled
 
     local mfk=$((TOTAL_KB / 128))
     [ "$mfk" -gt 131072 ] && mfk=131072
