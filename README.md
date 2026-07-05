@@ -78,5 +78,5 @@ hfdem PowerTune v2.3.2 | GPU: 调频100% | 温控: 🔴 OFF | 2026-05-28 20:15:3
 
 ## 作者
 
--原作者：[温柔浩](https://github.com/wenrouhao)
--修改者：[djt889](https://github.com/djt889)
+- 原作者：[温柔浩](https://github.com/wenrouhao)
+- 修改者：[djt889](https://github.com/djt889)
