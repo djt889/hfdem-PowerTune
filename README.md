@@ -7,7 +7,7 @@
 | 模块 | 目录 | ID / 版本 | 职责 |
 |---|---|---|---|
 | hfdem附加模块 | `modules/hfdem-addon` | `hfdem_savemode` / v1.0.0（31） | LZ4 + swappiness 60、内存/网络/后台、I/O/IRQ/LPM、Joyose 净化、5.15 KO 与安全回退；**不含动态超频** |
-| 动态超频模块 | `modules/hfdem-dynamic-oc` | `hfdem_dynamic_oc` / v1.0.1（2） | 基于 CTS 和 schedhorizon 调度（按需自选）；**仅含动态调度职责** |
+| 动态超频模块 | `modules/hfdem-dynamic-oc` | `hfdem_dynamic_oc` / v1.0.1（2） | 基于 CTS 和 schedhorizon 调度（按需自选二选一）；**仅含动态调度职责** |
 
 ## 安装
 
