@@ -4,6 +4,11 @@
 
 感谢 **@温柔浩** 提供原项目基础。
 
+本模块基于 **CTS 与 schedhorizon 调度**；**schedhorizon 按需自行安装**。
+
+- CTS：使用模块现有 CTS 模式输入。
+- schedhorizon：[按需下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)
+
 ## 功能边界
 
 本模块仅承担动态超频与调度职责：

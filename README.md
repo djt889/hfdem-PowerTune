@@ -7,7 +7,7 @@
 | 模块 | 目录 | ID / 版本 | 职责 |
 |---|---|---|---|
 | hfdem附加模块 | `modules/hfdem-addon` | `hfdem_savemode` / v1.0.0（31） | LZ4 + swappiness 60、内存/网络/后台、I/O/IRQ/LPM、Joyose 净化、5.15 KO 与安全回退；**不含动态超频** |
-| hfdem动态超频模块 | `modules/hfdem-dynamic-oc` | `hfdem_dynamic_oc` / v1.0.1（2） | Scene/CTS 双监听、四模式 CPU/GPU/总线动态调配、温控与 Action/WebUI Boost；**仅含超频职责** |
+| hfdem动态超频模块 | `modules/hfdem-dynamic-oc` | `hfdem_dynamic_oc` / v1.0.1（2） | 基于 CTS 与 schedhorizon 调度，四模式 CPU/GPU/总线动态调配，支持 KGSL、Mali/GED、温控与手动 Boost；**仅含动态调度职责** |
 
 ## 安装
 
@@ -34,7 +34,8 @@
 
 ### hfdem动态超频模块
 
-- 只包含四模式动态调频、双监听、GPU 平台适配、总线/UFS 调配、温控与手动 Boost。
+- 基于 **CTS 与 schedhorizon 调度**；**schedhorizon 按需自行安装**：[下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)。
+- 保留省电、均衡、性能、极速四模式 CPU/GPU/总线动态调配，以及 KGSL、Mali/GED、DDR/LLCC/L3/UFS、温控保护与手动 Boost。
 - 不包含 ZRAM、swappiness、THP/MGLRU、网络/后台、Joyose、KO/Binder、CPQ、IRQ 或通用 I/O 优化。
 - 超频可能增加功耗、温度和不稳定风险；请从均衡模式开始，并确保具备恢复条件。
 

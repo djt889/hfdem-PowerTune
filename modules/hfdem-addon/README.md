@@ -20,7 +20,7 @@
 
 ## 安装与升级
 
-在 Magisk、KernelSU 或 APatch 管理器中刷入 ZIP 后重启。模块 ID 保持 `hfdem_savemode`，可覆盖升级此前同 ID 版本。可与 `hfdem动态超频模块`（ID `hfdem_dynamic_oc`）同时安装。
+在 Magisk、KernelSU 或 APatch 管理器中刷入 ZIP 后重启。模块 ID 保持 `hfdem_savemode`，可覆盖升级此前同 ID 版本。可与 `动态超频模块`（ID `hfdem_dynamic_oc`）同时安装。
 
 ## 安全说明
 

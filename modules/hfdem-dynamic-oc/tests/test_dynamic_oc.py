@@ -17,6 +17,7 @@ def test_identity_version_and_isolation():
     assert "id=hfdem_dynamic_oc" in prop and "name=hfdem动态超频模块" in prop
     assert "version=v1.0.1" in prop and "versionCode=2" in prop
     assert "author=Jiuxia" in prop and "感谢 @温柔浩" in prop
+    assert "四模式" in prop and "KGSL" in prop and "Mali/GED" in prop and "温控" in prop
     assert "/data/adb/modules/hfdem_savemode" not in ALL
     assert "/dev/hfdem_boost" not in ALL and "/dev/hfdem_last_mode" not in ALL
     assert "/data/adb/modules/hfdem_dynamic_oc" in ALL
@@ -55,6 +56,8 @@ def test_only_oc_boundary_no_ko():
 
 def test_webui_modes_state_manual_control():
     web=text("webroot/index.html")
+    assert "<title>动态超频模块</title>" in web and "<h1>动态超频模块</h1>" in web
+    assert "基于 CTS 和 schedhorizon 调度（按需自选）" in web and "感谢 @温柔浩" in web
     for mode in ("powersave","balance","performance","fast"): assert mode in web
     assert "/dev/hfdem_dynamic_oc_last_mode" in web and "action.sh" in web
     assert "/dev/hfdem_dynamic_oc_manual_boost" in web
