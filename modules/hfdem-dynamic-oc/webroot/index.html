@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>hfdem动态超频模块</title>
+<style>
+:root{color-scheme:light dark;--bg:#f2f2f7;--card:#fff;--text:#111;--muted:#777;--blue:#087cff;--orange:#f59e0b}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--text:#f5f5f7;--muted:#aaa}}
+*{box-sizing:border-box}body{margin:0;padding:20px;background:var(--bg);color:var(--text);font-family:system-ui}main{max-width:760px;margin:auto}h1{margin:0 0 4px}.sub{color:var(--muted);margin-bottom:18px}.card{background:var(--card);border-radius:18px;padding:18px;margin:12px 0}.row{display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid #8884}.row:last-child{border:0}button{border:0;border-radius:12px;padding:11px 15px;background:var(--blue);color:#fff;font-weight:700;margin:5px}.warn{color:var(--orange);font-size:13px}#message{min-height:20px;color:var(--muted)}
+</style>
+</head>
+<body><main>
+<h1>hfdem动态超频模块</h1><div class="sub">v1.0.1 · 作者 Jiuxia · 独立四模式 CPU/GPU/总线动态调配</div><div class="sub">感谢 @温柔浩 提供原项目基础；本模块仅承担动态超频职责。</div>
+<section class="card">
+<div class="row"><span>当前模式</span><b id="mode">--</b></div>
+<div class="row"><span>Boost</span><b id="boost">--</b></div>
+<div class="row"><span>手动覆盖</span><b id="manual">--</b></div>
+<div class="row"><span>Scene</span><b id="scene">--</b></div>
+<div class="row"><span>CTS</span><b id="cts">--</b></div>
+</section>
+<section class="card"><b>模式控制</b><div>
+<button onclick="setMode('powersave')">省电</button><button onclick="setMode('balance')">均衡</button><button onclick="setMode('performance')">性能</button><button onclick="setMode('fast')">极速</button>
+</div><p class="warn">按钮真实写入 Scene 模式文件；Scene/CTS 后续变化继续由本模块双监听接管。</p></section>
+<section class="card"><b>手动 Boost</b><div><button onclick="toggleBoost()">切换 Boost</button><button onclick="refresh()">刷新状态</button></div><p class="warn">执行本模块 action.sh；手动覆盖持续到下一次模式事件。</p><div id="message"></div></section>
+</main>
+<script>
+const MOD='/data/adb/modules/hfdem_dynamic_oc';
+const $=id=>document.getElementById(id);
+function bridge(){return window.ksu||window.apatch||window.KernelSU}
+function output(v){if(typeof v==='string')return v;if(v&&typeof v.stdout==='string')return v.stdout;if(v&&typeof v.result==='string')return v.result;return''}
+function execRoot(cmd){return new Promise(resolve=>{const a=bridge();if(!a||typeof a.exec!=='function'){resolve('');return}let done=false;const finish=v=>{if(!done){done=true;resolve(output(v))}};try{const r=a.exec(cmd,finish);if(r&&typeof r.then==='function')r.then(finish).catch(()=>finish(''));else if(typeof r!=='undefined')finish(r);else setTimeout(()=>finish(''),1500)}catch(e){finish('')}})}
+async function read(path){return(await execRoot("cat '"+path+"' 2>/dev/null")).trim()}
+async function refresh(){
+ $('mode').textContent=await read('/dev/hfdem_dynamic_oc_last_mode')||'--';
+ $('boost').textContent=(await execRoot('[ -f /dev/hfdem_dynamic_oc_boost ] && echo ON || echo OFF')).trim()||'--';
+ $('manual').textContent=(await execRoot('[ -f /dev/hfdem_dynamic_oc_manual_boost ] && cat /dev/hfdem_dynamic_oc_manual_boost || echo AUTO')).trim()||'--';
+ $('scene').textContent=await read('/data/cur_powermode.txt')||'--';
+ $('cts').textContent=await read('/data/media/0/Android/CTS/mode.txt')||'--';
+}
+async function setMode(mode){$('message').textContent='正在切换模式…';await execRoot("printf '%s\\n' '"+mode+"' > /data/cur_powermode.txt");setTimeout(async()=>{$('message').textContent='模式命令已写入';await refresh()},500)}
+async function toggleBoost(){$('message').textContent='正在执行本模块 Action…';await execRoot("sh '"+MOD+"/action.sh'");setTimeout(async()=>{$('message').textContent='手动 Boost 已切换';await refresh()},300)}
+refresh();setInterval(refresh,5000);
+</script>
+</body></html>

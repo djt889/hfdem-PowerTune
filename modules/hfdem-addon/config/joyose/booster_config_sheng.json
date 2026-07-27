@@ -1,0 +1,25 @@
+{
+  "game_booster": {
+    "booster_enable": false,
+    "cpuset_enable": false,
+    "tuner_enable": false,
+    "monitor": {
+      "monitor_enable": false,
+      "analytics_enable": false
+    },
+    "background_freeze_enable": false,
+    "scene_id_sender_enable": false,
+    "game_identify": false,
+    "booster_config": {
+      "default_config": [],
+      "scene_config": []
+    }
+  },
+  "header": {
+    "version": "hfdem_nooc_2047123101",
+    "network_improve": true,
+    "support_wifi_ant_swap": true,
+    "index_enable": false,
+    "mqs_enable": false
+  }
+}

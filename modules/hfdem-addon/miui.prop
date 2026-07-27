@@ -1,0 +1,132 @@
+# MIUI Shit trimming
+
+# Faster game loading
+debug.game.video.support=true
+
+# More blurring
+persist.sys.add_blurnoise_supported=true
+persist.sys.advanced_visual_release=4
+persist.sys.background_blur_supported=true
+persist.sys.background_blur_version=2
+ro.launcher.blur.appLaunch=1
+ro.sf.blurs_are_expensive=0
+debug.sysui.display_notification_shadow=1
+
+# Memory Management
+persist.miui.boot.mopt.enable=false
+persist.miui.extm.bdzise=0
+persist.miui.extm.enable=false
+persist.sys.memory_standard.enable=false
+persist.sys.mfz.enable=false
+persist.sys.min.swap.free=false
+persist.sys.miui.resident.app.count=256
+persist.sys.mms.bg_apps_limit=256
+persist.sys.mms.compact_enable=false
+persist.sys.mms.enable=false
+persist.sys.mms.single_compact_enable=false
+persist.sys.spc.enabled=false
+persist.sys.spc.bindvisible.enabled=false
+persist.sys.spc.cpulimit.enabled=false
+persist.sys.spc.cpuexception.enabled=false
+persist.sys.spc.fast.launch=false
+persist.sys.spc.gamepay.protect.enabled=true
+persist.sys.spc.proc_restart_enable=false
+persist.sys.spc.process.tracker.enable=false
+persist.sys.spc.resident.app.enable=false
+persist.sys.spc.scale.backgorund.app.enable=false
+persist.sys.mimd.reclaim.enable=false
+persist.sys.miui.damon.enable=false
+persist.sys.miui.unfairMemory.enable=false
+persist.sys.mthp.enabled=false
+persist.sys.stability.swapEnable=false
+persist.sys.smartpower.intercept.enable=false
+persist.sys.mms.fg.compact.enable.wm=0
+persist.sys.kill_heap_exception_app_enable=false
+persist.sys.umms=false
+persist.sys.mms.use_integrated_memory_reclaim=false
+persist.sys.gz.disablethaw=false
+persist.imr.wm.mb.avail.high=0,0,0
+persist.imr.wm.mb.avail.mid=0,0,0
+persist.imr.wm.mb.avail.low=0,0,0
+persist.imr.wm.mb.free.high=0,0,0
+persist.imr.wm.mb.free.mid=0,0,0
+persist.imr.wm.mb.free.low=0,0,0
+persist.imr.wm.mb.file.high=0,0,0
+persist.imr.wm.mb.file.mid=0,0,0
+persist.imr.wm.mb.file.low=0,0,0
+persist.imr.wm.mb.anon.high=0,0,0
+persist.imr.wm.mb.anon.mid=0,0,0
+persist.imr.wm.mb.anon.low=0,0,0
+persist.imr.wm.mb.swapfree.low=0,0,0
+persist.imr.release.pss.pm=0
+persist.imr.release.pss.cpm=0
+persist.imr.release.pss.launch=0
+persist.imr.release.pss.file=0
+persist.imr.release.pss.subproc=0
+persist.imr.killed.count.limit=0
+persist.imr.interval.pm.npw=1001
+persist.imr.interval.pm.epw=1001
+persist.imr.interval.pm.cpw=1001
+persist.imr.interval.appstart=1001
+persist.imr.main.proc.start.unit=0,0,0
+persist.imr.mem.reclaim.wm.kb=0
+persist.imr.low.mi_mempool.wm.pages=0
+persist.imr.low.mi_mempool.free.wm.kb=0
+
+# Prefetchers
+persist.mm.enable.prefetch=false
+persist.sys.dynamic_usap_enabled=false
+persist.sys.preload.enable=false
+persist.sys.prestart.feedback.enable=false
+persist.sys.prestart.proc=false
+persist.sys.stability.iorapEnable=false
+
+# Sched
+persist.sys.miui_animator_sched.sched_threads=0
+persist.sf.force_setaffinity.bigcore=0
+persist.sys.rtmode_templimit_bottom=93
+persist.sys.rtmode_templimit_ceiling=95
+
+
+# Debug
+persist.sys.debug.app.mtbf_test=false
+persist.sys.perfdebug.monitor.enable=0
+
+# Display
+persist.sys.smartpower.display.enable=false
+persist.sys.smartpower.display_camera_fps_enable=false
+persist.sys.flingpromotion.enable=0
+ro.vendor.perf.scroll_opt=0
+persist.sys.mi.prerender=false
+
+# Haptics
+sys.haptic.lowPowerMode=false
+sys.haptic.BCLMode=false
+sys.haptic.slide_version=1.0
+sys.haptic.onetrack=false
+
+# Misc
+persist.sys.stability.nativehang.enable=false
+persist.sys.stability.qcom_hang_task.enable=false
+persist.sys.stability.report_app_launch.enable=false
+persist.sys.miuitcptracker.ctrl=0
+
+
+# Render
+persist.sys.cachebuffer.enable=true
+persist.sys.dynamicbuffer.max_adjust_num=3
+persist.sys.disable_bganimate=false
+
+# ANR
+persist.sys.skip_anr_dialog=0
+persist.sys.skip_app_request_anr=0
+persist.sys.skip_broadcast_anr=0
+persist.sys.skip_content_provider_anr=0
+persist.sys.skip_foreground_service_anr=0
+persist.sys.skip_input_anr=0
+persist.sys.skip_job_anr=0
+persist.sys.skip_service_anr=0
+persist.sys.skip_startup_anr=0
+persist.sys.skip_system_anr=0
+persist.sys.skip_thirdpart_anr=0
+persist.sys.sysrqOnAnr_D_state=false
