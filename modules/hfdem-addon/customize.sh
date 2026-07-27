@@ -3,7 +3,7 @@ SKIPUNZIP=0
 
 ui_print " "
 ui_print "|=================================="
-ui_print "| hfdem附加模块 v1.0.0"
+ui_print "| hfdem附加模块 v1.0.1"
 ui_print "| 作者：Jiuxia"
 ui_print "| 感谢 @温柔浩：原模块基础"
 ui_print "| 感谢 @Amktiao：5.15 内核优化模块"
@@ -35,7 +35,7 @@ case "$KVER" in
     *) rm -rf "$MODPATH/ko"; ui_print "- 内核 $KVER 非 5.15，跳过 @Amktiao 的第三方 5.15 KO" ;;
 esac
 
-ui_print "- 无超频版不含调度监听、频率写入、温控 Boost 或手动 Boost"
+ui_print "- 动态调频监听由独立超频模块负责；本模块不执行 CPU/GPU/总线频率写入"
 rm -f "$MODPATH/gpu_boost.conf"
 set_perm_recursive "$MODPATH" 0 0 0755 0644
 for f in service.sh utils.sh post-fs-data.sh uninstall.sh no_oc_check.sh; do

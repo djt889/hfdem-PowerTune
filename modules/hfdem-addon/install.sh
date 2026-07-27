@@ -3,7 +3,7 @@
 SKIPUNZIP=0
 unzip -o "$ZIPFILE" -d "$MODPATH" >&2
 
-ui_print "| hfdem附加模块 v1.0.0｜作者：Jiuxia"
+ui_print "| hfdem附加模块 v1.0.1｜作者：Jiuxia"
 ui_print "| 感谢 @温柔浩（原模块基础）、@Amktiao（5.15 内核优化模块）"
 
 OLD_MOD="/data/adb/modules/hfdem_savemode"

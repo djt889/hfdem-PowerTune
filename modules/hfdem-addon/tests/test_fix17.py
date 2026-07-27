@@ -18,7 +18,7 @@ def extract_function(src,name):
     raise AssertionError(name)
 
 def test_metadata():
-    for x in ("id=hfdem_savemode","name=hfdem附加模块","version=v1.0.0","versionCode=31","author=Jiuxia","@温柔浩","@Amktiao"): assert x in PROP
+    for x in ("id=hfdem_savemode","name=hfdem附加模块","version=v1.0.1","versionCode=32","author=Jiuxia","@温柔浩","@Amktiao"): assert x in PROP
 
 def test_cloud_resources_and_safe_install_branches():
     assert (ROOT/"bin/cloudconfig_gen").is_file()
@@ -49,6 +49,32 @@ def test_no_action_and_readonly_webui():
     assert "手动Boost" not in WEBUI and "手动 Boost" not in WEBUI
     assert "只读基础模块" in WEBUI and "不读取外部模式文件" in WEBUI
     assert "onclick=\"refresh()\"" in WEBUI and "write_val" not in WEBUI
+    assert "动态调频监听','由独立超频模块负责" in WEBUI
+    assert "CPU/GPU/总线频率写入','本模块不执行" in WEBUI
+
+def run_webui_probe(expression):
+    node=subprocess.run(["node","--version"],capture_output=True)
+    if node.returncode: return None
+    functions=[]
+    for name in ("formatBatteryTemp","koStatus"):
+        marker=f"function {name}("; start=WEBUI.index(marker); depth=0
+        brace=WEBUI.index("{",start)
+        for pos in range(brace,len(WEBUI)):
+            if WEBUI[pos]=="{": depth+=1
+            elif WEBUI[pos]=="}":
+                depth-=1
+                if depth==0: functions.append(WEBUI[start:pos+1]); break
+    return subprocess.run(["node","-e","\n".join(functions)+f"\nconsole.log(JSON.stringify({expression}))"],text=True,capture_output=True,check=True).stdout.strip()
+
+def test_webui_temperature_formatter_contract_and_probe():
+    assert "function formatBatteryTemp(raw)" in WEBUI and "Number.isFinite" in WEBUI
+    result=run_webui_probe("[formatBatteryTemp(377),formatBatteryTemp(37),formatBatteryTemp(37.5),formatBatteryTemp(37700),formatBatteryTemp('')]")
+    if result is not None: assert json.loads(result)==["37.7°C","37°C","37.5°C","37.7°C","--"]
+
+def test_webui_ko_status_mapping_and_exact_log_isolation():
+    for state in ("加载成功","加载失败","已跳过","未加载/尚未执行","非5.15内核不适用"): assert state in WEBUI
+    result=run_webui_probe("[koStatus('moon_binder','yes','', '5.15.202'),koStatus('moon_binder','no','moon_binder load failed','5.15.202'),koStatus('moon_binder','no','moon_binder skipped: guard','5.15.202'),koStatus('moon_binder','no','','5.15.202'),koStatus('moon_binder','no','','6.1.0'),koStatus('moon_binder','no','moon_kshrink_slabd load failed','5.15.202')]")
+    if result is not None: assert json.loads(result)==["加载成功","加载失败","已跳过","未加载/尚未执行","非5.15内核不适用","未加载/尚未执行"]
 
 def test_no_listener_frequency_gpu_bus_or_thermal_boost_runtime():
     assert not (ROOT/"boost_monitor.sh").exists()
