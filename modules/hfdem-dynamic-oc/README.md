@@ -1,13 +1,13 @@
-# hfdem动态超频模块 v1.0.1
+# 动态超频模块 v1.0.1
 
 作者：**Jiuxia**
 
 感谢 **@温柔浩** 提供原项目基础。
 
-本模块基于 **CTS 与 schedhorizon 调度**；**schedhorizon 按需自行安装**。
+基于 **CTS** 和 **schedhorizon** 调度（按需自选）。
 
 - CTS：使用模块现有 CTS 模式输入。
-- schedhorizon：[按需下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)
+- schedhorizon：[下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)
 
 ## 功能边界
 
@@ -15,7 +15,7 @@
 
 - Scene/CTS 双监听、模式归一化、防抖与原子替换恢复。
 - 省电、均衡、性能、极速四模式的 CPU/GPU/总线动态调配。
-- Qualcomm KGSL、保守识别的 Mali/GPU devfreq、GED、DDR/LLCC/L3/UFS 调配。
+- Qualcomm KGSL、保守识别的 Mali/GED（Mali/GPU devfreq 与 GED）、DDR/LLCC/L3/UFS 调配。
 - 温控保护与独立 Action 手动 Boost。
 - WebUI 保留四模式与 Boost 控制，并只使用本模块 ID、配置、日志和 `/dev/hfdem_dynamic_oc_*` 状态。
 

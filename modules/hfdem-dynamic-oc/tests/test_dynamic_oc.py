@@ -14,10 +14,11 @@ def text(name): return (ROOT/name).read_text(encoding="utf-8")
 
 def test_identity_version_and_isolation():
     prop=text("module.prop")
-    assert "id=hfdem_dynamic_oc" in prop and "name=hfdem动态超频模块" in prop
+    assert "id=hfdem_dynamic_oc" in prop and "name=动态超频模块" in prop
     assert "version=v1.0.1" in prop and "versionCode=2" in prop
-    assert "author=Jiuxia" in prop and "感谢 @温柔浩" in prop
-    assert "四模式" in prop and "KGSL" in prop and "Mali/GED" in prop and "温控" in prop
+    assert "author=Jiuxia" in prop
+    assert "description=基于 CTS 和 schedhorizon 调度（按需自选）" in prop
+    assert "四模式" not in prop and "KGSL" not in prop and "Mali" not in prop and "温控" not in prop
     assert "/data/adb/modules/hfdem_savemode" not in ALL
     assert "/dev/hfdem_boost" not in ALL and "/dev/hfdem_last_mode" not in ALL
     assert "/data/adb/modules/hfdem_dynamic_oc" in ALL
@@ -88,6 +89,7 @@ def test_runtime_entries_and_minimal_assets():
 
 def test_modern_installer_permissions_and_single_daemon_guard():
     custom = text("customize.sh")
+    install = text("install.sh")
     service = text("service.sh")
     uninstall = text("uninstall.sh")
     assert "SKIPUNZIP=0" in custom
@@ -95,6 +97,19 @@ def test_modern_installer_permissions_and_single_daemon_guard():
         assert name in custom
     assert "set_perm_recursive" in custom and "set_perm" in custom
     assert "/data/adb/modules/hfdem_savemode" not in custom
+    for installer in (custom, install):
+        assert "动态超频模块" in installer and "作者：Jiuxia" in installer
+        assert "基于 CTS 和 schedhorizon 调度（按需自选）" in installer
+        assert "感谢 @温柔浩" in installer
+        assert "hfdem动态超频模块" not in installer
     assert "PIDFILE=/dev/hfdem_dynamic_oc_monitor_pid" in service
     assert 'kill -0 "$OLDPID"' in service
     assert "hfdem_dynamic_oc_monitor_pid" in uninstall and 'kill "$PID"' in uninstall
+
+def test_readme_has_complete_final_contract():
+    readme = text("README.md")
+    assert "# 动态超频模块 v1.0.1" in readme and "作者：**Jiuxia**" in readme
+    assert "基于 **CTS** 和 **schedhorizon** 调度（按需自选）" in readme
+    assert "https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip" in readme
+    assert "四模式的 CPU/GPU/总线动态调配" in readme and "KGSL" in readme and "Mali/GPU devfreq" in readme and "GED" in readme
+    assert "温控保护" in readme and "手动 Boost" in readme and "感谢 **@温柔浩**" in readme
