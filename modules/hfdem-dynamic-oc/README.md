@@ -1,13 +1,13 @@
-# 动态超频模块 v1.0.1
+# hfdem动态超频模块 v1.0.1
 
 作者：**Jiuxia**
 
 感谢 **@温柔浩** 提供原项目基础。
 
-基于 **CTS** 和 **schedhorizon** 调度（按需自选）。
+本模块基于 **CTS 与 schedhorizon 调度**；**schedhorizon 按需自行安装**。
 
 - CTS：使用模块现有 CTS 模式输入。
-- schedhorizon：[下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)
+- schedhorizon：[按需下载 schedhorizon-20241107.zip](https://github.com/hfdem/android_gki_kernel_5.15_common/releases/download/v25.06.15/schedhorizon-20241107.zip)
 
 ## 功能边界
 
