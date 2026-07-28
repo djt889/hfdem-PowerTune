@@ -297,89 +297,10 @@ init_io() {
 }
 
 # ============================================================
-# 4b. [fix17] 5.15 内核性能模块加载（moon-sheng .ko）
-# Binder is special: replace binder_prio only when its original ko can be
-# restored. All other modules remain independent best-effort loads.
+# 4b. 5.15 附加优化说明
+# hfdem 内核已内建原 @Amktiao 5.15 附加优化（binder / kshrink /
+# sw_sync 等），本模块自 v1.0.2 起不再携带或加载任何第三方 KO。
 # ============================================================
-init_kernel_modules() {
-    KO_DIR="${HFD_TEST_KO_DIR:-$MODDIR/ko}"
-    SYS_MODULE_ROOT="${HFD_TEST_SYS_MODULE_ROOT:-/sys/module}"
-    KERNEL_RELEASE="${HFD_TEST_KERNEL_RELEASE:-$(uname -r)}"
-    [ -d "$KO_DIR" ] || return
-    case "$KERNEL_RELEASE" in
-        5.15*) ;;
-        *) return ;;
-    esac
-    KO_LOG="$MODDIR/ko_load.log"
-    rotate_log "$KO_LOG" 262144
-    echo "[$(_get_time)] platform=kernel=$KERNEL_RELEASE ko_dir=$KO_DIR" >> "$KO_LOG"
-
-    moon="$KO_DIR/android13-5.15_moon_binder.ko"
-    if [ -f "$moon" ] && [ ! -d "$SYS_MODULE_ROOT/moon_binder" ]; then
-        # Diagnostic only: kernels in the same 5.15 family may accept this
-        # module despite a differing full release string (for example
-        # 5.15.185 module vermagic on a verified-working 5.15.202 kernel).
-        moon_vermagic="$(modinfo -F vermagic "$moon" 2>/dev/null)"
-        echo "[$(_get_time)] moon_binder diagnostic: vermagic=${moon_vermagic:-unavailable} kernel=$KERNEL_RELEASE" >> "$KO_LOG"
-        if [ -d "$SYS_MODULE_ROOT/binder_prio" ]; then
-            original=""
-            if [ -n "${HFD_TEST_BINDER_ORIGINAL:-}" ] && [ -f "$HFD_TEST_BINDER_ORIGINAL" ]; then
-                original="$HFD_TEST_BINDER_ORIGINAL"
-            fi
-            for candidate in \
-                /vendor_dlkm/lib/modules/binder_prio.ko \
-                /vendor/lib/modules/binder_prio.ko \
-                /system_dlkm/lib/modules/binder_prio.ko \
-                /system/lib/modules/binder_prio.ko \
-                /odm/lib/modules/binder_prio.ko; do
-                [ -n "$original" ] && break
-                [ -f "$candidate" ] && { original="$candidate"; break; }
-            done
-            if [ -z "$original" ]; then
-                echo "[$(_get_time)] moon_binder skipped: binder_prio loaded; no recoverable binder_prio.ko" >> "$KO_LOG"
-            else
-                echo "[$(_get_time)] binder replacement: original=$original moon=$moon" >> "$KO_LOG"
-                if rmmod binder_prio >> "$KO_LOG" 2>&1; then
-                    sleep 1
-                    if insmod "$moon" >> "$KO_LOG" 2>&1 && [ -d "$SYS_MODULE_ROOT/moon_binder" ]; then
-                        echo "[$(_get_time)] moon_binder loaded" >> "$KO_LOG"
-                    else
-                        echo "[$(_get_time)] moon_binder failed; cleaning up and restoring $original" >> "$KO_LOG"
-                        [ -d "$SYS_MODULE_ROOT/moon_binder" ] && rmmod moon_binder >> "$KO_LOG" 2>&1
-                        insmod "$original" >> "$KO_LOG" 2>&1
-                        if [ -d "$SYS_MODULE_ROOT/binder_prio" ]; then
-                            echo "[$(_get_time)] binder_prio restored and verified" >> "$KO_LOG"
-                        else
-                            echo "[$(_get_time)] ERROR: binder_prio restore verification failed" >> "$KO_LOG"
-                        fi
-                    fi
-                else
-                    echo "[$(_get_time)] moon_binder skipped: rmmod binder_prio failed" >> "$KO_LOG"
-                fi
-            fi
-        else
-            if insmod "$moon" >> "$KO_LOG" 2>&1 && [ -d "$SYS_MODULE_ROOT/moon_binder" ]; then
-                echo "[$(_get_time)] moon_binder loaded (binder_prio absent)" >> "$KO_LOG"
-            else
-                echo "[$(_get_time)] moon_binder load failed (binder_prio absent)" >> "$KO_LOG"
-            fi
-        fi
-    fi
-
-    # Do not pre-check vermagic for these modules. Every module is independent;
-    # one failure, including moon_binder above, must not stop the remaining loads.
-    for ko in moon_kshrink_slabd moon_kshrink_lruvecd mi_sw_sync; do
-        f="$KO_DIR/android13-5.15_$ko.ko"
-        [ -f "$f" ] || continue
-        [ -d "$SYS_MODULE_ROOT/$ko" ] && { echo "[$(_get_time)] $ko already loaded" >> "$KO_LOG"; continue; }
-        if insmod "$f" >> "$KO_LOG" 2>&1 && [ -d "$SYS_MODULE_ROOT/$ko" ]; then
-            echo "[$(_get_time)] $ko loaded path=$f" >> "$KO_LOG"
-        else
-            echo "[$(_get_time)] $ko load failed path=$f; continuing" >> "$KO_LOG"
-        fi
-    done
-    rotate_log "$KO_LOG" 262144
-}
 
 # ============================================================
 # 5. 网络（用 mask_val 防系统回写覆盖）
@@ -527,7 +448,5 @@ init_cpuset
 init_lpm
 init_sched
 
-# [fix16] 5.15 moon-sheng 内核模块（后台加载，rmmod/sleep 不阻塞主流程）
-init_kernel_modules &
 init_io
 init_mem

@@ -18,7 +18,8 @@ def extract_function(src,name):
     raise AssertionError(name)
 
 def test_metadata():
-    for x in ("id=hfdem_savemode","name=hfdem附加模块","version=v1.0.1","versionCode=32","author=Jiuxia","@温柔浩","@Amktiao"): assert x in PROP
+    for x in ("id=hfdem_savemode","name=hfdem附加模块","version=v1.0.2","versionCode=33","author=Jiuxia","@温柔浩","@Amktiao"): assert x in PROP
+    assert "不再携带或加载第三方 KO" in PROP and "已内建于 hfdem 内核" in PROP
 
 def test_cloud_resources_and_safe_install_branches():
     assert (ROOT/"bin/cloudconfig_gen").is_file()
@@ -56,7 +57,7 @@ def run_webui_probe(expression):
     node=subprocess.run(["node","--version"],capture_output=True)
     if node.returncode: return None
     functions=[]
-    for name in ("formatBatteryTemp","koStatus"):
+    for name in ("formatBatteryTemp","builtin515Status"):
         marker=f"function {name}("; start=WEBUI.index(marker); depth=0
         brace=WEBUI.index("{",start)
         for pos in range(brace,len(WEBUI)):
@@ -71,10 +72,11 @@ def test_webui_temperature_formatter_contract_and_probe():
     result=run_webui_probe("[formatBatteryTemp(377),formatBatteryTemp(37),formatBatteryTemp(37.5),formatBatteryTemp(37700),formatBatteryTemp('')]")
     if result is not None: assert json.loads(result)==["37.7°C","37°C","37.5°C","37.7°C","--"]
 
-def test_webui_ko_status_mapping_and_exact_log_isolation():
-    for state in ("加载成功","加载失败","已跳过","未加载/尚未执行","非5.15内核不适用"): assert state in WEBUI
-    result=run_webui_probe("[koStatus('moon_binder','yes','', '5.15.202'),koStatus('moon_binder','no','moon_binder load failed','5.15.202'),koStatus('moon_binder','no','moon_binder skipped: guard','5.15.202'),koStatus('moon_binder','no','','5.15.202'),koStatus('moon_binder','no','','6.1.0'),koStatus('moon_binder','no','moon_kshrink_slabd load failed','5.15.202')]")
-    if result is not None: assert json.loads(result)==["加载成功","加载失败","已跳过","未加载/尚未执行","非5.15内核不适用","未加载/尚未执行"]
+def test_webui_builtin_515_status_card():
+    for x in ("内核内建优化状态","内核已内建","不再携带或加载任何第三方 KO","本模块不加载（内核已内建）","function builtin515Status(kernel)","@Amktiao","@温柔浩"): assert x in WEBUI,x
+    for x in ("koStatus","ko_load.log","moon_binder","moon_kshrink","mi_sw_sync","加载成功","加载失败","已跳过","未加载/尚未执行","/sys/module/moon","/sys/module/mi_sw"): assert x not in WEBUI,x
+    result=run_webui_probe("[builtin515Status('5.15.202-android13-8'),builtin515Status(' 5.15.1 '),builtin515Status('6.1.0'),builtin515Status('')]")
+    if result is not None: assert json.loads(result)==["5.15 内核（优化内建于内核）","5.15 内核（优化内建于内核）","非 5.15 内核","非 5.15 内核"]
 
 def test_no_listener_frequency_gpu_bus_or_thermal_boost_runtime():
     assert not (ROOT/"boost_monitor.sh").exists()
@@ -213,24 +215,18 @@ def test_zram_sandbox_mkswap_and_swapon_failure_trigger_recovery():
     assert "恢复成功" in log and "最终状态: swap active" in log and "zram0" in swaps
 
 
-def test_515_ko_binder_rollback_present():
-    for x in ("init_kernel_modules","5.15*","android13-5.15_moon_binder.ko","rmmod binder_prio",'insmod "$original"',"binder_prio restored and verified","moon_kshrink_slabd","moon_kshrink_lruvecd","mi_sw_sync"): assert x in SERVICE,x
-
-def test_binder_failure_restores_and_continues():
-    fn=extract_function(SERVICE,"init_kernel_modules")
-    with tempfile.TemporaryDirectory() as td:
-        r=Path(td); ko=r/"ko"; sysm=r/"sys"; bp=r/"bin"; ko.mkdir();sysm.mkdir();bp.mkdir();(sysm/"binder_prio").mkdir()
-        original=r/"binder_prio.ko";original.write_bytes(b"o")
-        for n in ("moon_binder","moon_kshrink_slabd","moon_kshrink_lruvecd","mi_sw_sync"): (ko/f"android13-5.15_{n}.ko").write_bytes(b"k")
-        trace=r/"trace";(bp/"modinfo").write_text("#!/bin/sh\necho test\n")
-        (bp/"rmmod").write_text('#!/bin/sh\necho rmmod:$1 >> "$TRACE"\nrm -rf "$SYSROOT/$1"\n')
-        (bp/"insmod").write_text('#!/bin/sh\nb=${1##*/};n=${b#android13-5.15_};n=${n%.ko};[ "$1" = "$ORIGINAL" ]&&n=binder_prio\necho insmod:$n >> "$TRACE"\n[ "$n" = moon_binder ]&&exit 1\nmkdir -p "$SYSROOT/$n"\n')
-        for p in bp.iterdir():p.chmod(0o755)
-        run=r/"run.sh";run.write_text("#!/bin/sh\n_get_time(){ echo T; }\nrotate_log(){ :; }\n"+fn+"\ninit_kernel_modules\n")
-        env=os.environ|{"PATH":str(bp)+os.pathsep+os.environ["PATH"],"MODDIR":str(r),"HFD_TEST_KO_DIR":str(ko),"HFD_TEST_SYS_MODULE_ROOT":str(sysm),"HFD_TEST_KERNEL_RELEASE":"5.15.202-test","HFD_TEST_BINDER_ORIGINAL":str(original),"SYSROOT":str(sysm),"TRACE":str(trace),"ORIGINAL":str(original)}
-        out=subprocess.run(["sh",str(run)],env=env,text=True,capture_output=True);assert out.returncode==0,out.stderr
-        tr=trace.read_text();log=(r/"ko_load.log").read_text();assert "insmod:binder_prio" in tr and "binder_prio restored and verified" in log
-        for n in ("moon_kshrink_slabd","moon_kshrink_lruvecd","mi_sw_sync"):assert f"insmod:{n}" in tr
+def test_no_ko_files_or_ko_load_logic_anywhere():
+    assert not (ROOT/"ko").exists()
+    assert list(ROOT.rglob("*.ko"))==[]
+    sources={p.name:p.read_text(encoding="utf-8") for p in list(ROOT.glob("*.sh"))+list(ROOT.glob("*.prop"))+[ROOT/"README.md",ROOT/"webroot/index.html"]}
+    allsrc="\n".join(sources.values())
+    codesrc="\n".join(v for k,v in sources.items() if k!="README.md")
+    for x in ("init_kernel_modules","ko_load.log","KO_LOG","KO_DIR","rmmod","insmod","modinfo","binder_prio","HFD_TEST_KO_DIR","HFD_TEST_BINDER_ORIGINAL","HFD_TEST_SYS_MODULE_ROOT"): assert x not in allsrc,x
+    for x in ("moon_binder","moon_kshrink_slabd","moon_kshrink_lruvecd","mi_sw_sync","android13-5.15"): assert x not in codesrc,x
+    assert "rotate_log" not in SERVICE
+    readme=text("README.md")
+    for x in ("不再携带或加载任何第三方 KO","内建于 hfdem 内核","@Amktiao","@温柔浩"): assert x in readme,x
+    assert not re.search(r"(?<!不)(?<!不再)(?<!未)集成.{0,6}KO", readme)
 
 def test_uninstall_isolated_from_dynamic_oc():
     u=text("uninstall.sh")

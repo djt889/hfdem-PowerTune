@@ -3,8 +3,8 @@
 SKIPUNZIP=0
 unzip -o "$ZIPFILE" -d "$MODPATH" >&2
 
-ui_print "| hfdem附加模块 v1.0.1｜作者：Jiuxia"
-ui_print "| 感谢 @温柔浩（原模块基础）、@Amktiao（5.15 内核优化模块）"
+ui_print "| hfdem附加模块 v1.0.2｜作者：Jiuxia"
+ui_print "| 感谢 @温柔浩（原模块基础）、@Amktiao（5.15 内核优化，内核已内建）"
 
 OLD_MOD="/data/adb/modules/hfdem_savemode"
 if [ "$OLD_MOD" != "$MODPATH" ] && [ -d "$OLD_MOD" ]; then rm -rf "$OLD_MOD"; fi
@@ -21,8 +21,8 @@ rm -f "$MODPATH/gen_cloud_config.sh" "$MODPATH/bin/cloudconfig_gen"
 rmdir "$MODPATH/bin" 2>/dev/null
 
 case "$(uname -r)" in
-  5.15*) ui_print "- 保留来自 @Amktiao 的第三方 5.15 KO" ;;
-  *) rm -rf "$MODPATH/ko"; ui_print "- 非 5.15 内核，跳过第三方 KO" ;;
+  5.15*) ui_print "- 5.15 附加优化已内建于 hfdem 内核，本模块不再加载第三方 KO" ;;
+  *) ui_print "- 非 5.15 内核；本模块不加载第三方 KO" ;;
 esac
 rm -f "$MODPATH/gpu_boost.conf"
 set_perm_recursive "$MODPATH" 0 0 0755 0644

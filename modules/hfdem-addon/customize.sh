@@ -3,10 +3,10 @@ SKIPUNZIP=0
 
 ui_print " "
 ui_print "|=================================="
-ui_print "| hfdem附加模块 v1.0.1"
+ui_print "| hfdem附加模块 v1.0.2"
 ui_print "| 作者：Jiuxia"
 ui_print "| 感谢 @温柔浩：原模块基础"
-ui_print "| 感谢 @Amktiao：5.15 内核优化模块"
+ui_print "| 感谢 @Amktiao：5.15 内核优化（内核已内建）"
 ui_print "|=================================="
 ui_print " "
 
@@ -31,8 +31,8 @@ rmdir "$MODPATH/bin" 2>/dev/null
 
 KVER="$(uname -r)"
 case "$KVER" in
-    5.15*) ui_print "- 内核 $KVER，保留来自 @Amktiao 的第三方 5.15 KO" ;;
-    *) rm -rf "$MODPATH/ko"; ui_print "- 内核 $KVER 非 5.15，跳过 @Amktiao 的第三方 5.15 KO" ;;
+    5.15*) ui_print "- 内核 $KVER：5.15 附加优化已内建于 hfdem 内核，本模块不再加载第三方 KO" ;;
+    *) ui_print "- 内核 $KVER 非 5.15；本模块不加载第三方 KO" ;;
 esac
 
 ui_print "- 动态调频监听由独立超频模块负责；本模块不执行 CPU/GPU/总线频率写入"
