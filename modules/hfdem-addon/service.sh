@@ -221,7 +221,7 @@ init_zram_per() {
 # 主策略固定标准 lz4；先做能力枚举，只有支持时才选择。
 # 不支持时保守回退 zstd 或当前受支持算法，且回读验证通过后才 mkswap/swapon。
 init_zram() {
-    init_zram_per "0" "lz4"
+    init_zram_per "0" "lz4hc"
 }
 
 # ============================================================
@@ -253,12 +253,12 @@ init_mem() {
     [ "$mfk" -lt 32768 ] && mfk=32768
     write_val "$mfk" /proc/sys/vm/min_free_kbytes
 
-    write_val "5" /proc/sys/vm/dirty_ratio
-    write_val "2" /proc/sys/vm/dirty_background_ratio
+    write_val "10" /proc/sys/vm/dirty_ratio
+    write_val "3" /proc/sys/vm/dirty_background_ratio
     write_val "60" /proc/sys/vm/dirtytime_expire_seconds
 
     [ -f /sys/kernel/mm/lru_gen/enabled ] && write_val "0x0007" /sys/kernel/mm/lru_gen/enabled
-    [ -f /sys/kernel/mm/lru_gen/min_ttl_ms ] && write_val "1000" /sys/kernel/mm/lru_gen/min_ttl_ms
+    [ -f /sys/kernel/mm/lru_gen/min_ttl_ms ] && write_val "5000" /sys/kernel/mm/lru_gen/min_ttl_ms
 
     [ -f /sys/module/pandora_config/parameters/enable_mm_vhs ] && write_val "Y" /sys/module/pandora_config/parameters/enable_mm_vhs
 
