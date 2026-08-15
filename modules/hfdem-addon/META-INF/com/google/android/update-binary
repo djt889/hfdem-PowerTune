@@ -25,6 +25,30 @@ ZIPFILE=$3
 
 mount /data 2>/dev/null
 
+# Detect KernelSU
+if [ -f /data/adb/ksud ] || [ -d /data/adb/ksu ] || [ "$KSU" = "true" ] || [ "$KSU" = "1" ]; then
+  ui_print "- KernelSU environment detected, installing directly..."
+  # KSU: unzip module to /data/adb/modules (ksud handles module.prop)
+  MODDIR=/data/adb/modules/hfdem_savemode
+  rm -rf "$MODDIR"
+  mkdir -p "$MODDIR"
+  unzip -o "$ZIPFILE" -d "$MODDIR" >&2 || {
+    ui_print "! Failed to unzip module"
+    exit 1
+  }
+  # Run customize.sh if present (KSU-compatible)
+  if [ -f "$MODDIR/customize.sh" ]; then
+    MODPATH="$MODDIR"
+    MODDIR="$MODDIR"
+    ZIPFILE="$ZIPFILE"
+    OUTFD="$OUTFD"
+    . "$MODDIR/customize.sh"
+  fi
+  ui_print "- Installed. Reboot to activate."
+  exit 0
+fi
+
+# Magisk environment
 [ -f /data/adb/magisk/util_functions.sh ] || require_new_magisk
 . /data/adb/magisk/util_functions.sh
 [ $MAGISK_VER_CODE -lt 20400 ] && require_new_magisk

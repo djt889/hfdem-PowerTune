@@ -1,9 +1,26 @@
 #!/system/bin/sh
 SKIPUNZIP=0
 
+# KernelSU/Magisk 兼容: 若 set_perm_recursive 未定义(KSU 部分版本), 提供 fallback
+if ! command -v set_perm_recursive >/dev/null 2>&1; then
+    set_perm_recursive() {
+        # $1=dir $2=uid $3=gid $4=dmode $5=fmode
+        find "$1" -type d -exec chmod "$4" {} + 2>/dev/null
+        find "$1" -type f -exec chmod "$5" {} + 2>/dev/null
+        chown -R "$2:$3" "$1" 2>/dev/null
+    }
+fi
+if ! command -v set_perm >/dev/null 2>&1; then
+    set_perm() {
+        # $1=file $2=uid $3=gid $4=mode
+        chmod "$4" "$1" 2>/dev/null
+        chown "$2:$3" "$1" 2>/dev/null
+    }
+fi
+
 ui_print " "
 ui_print "|=================================="
-ui_print "| hfdem附加模块 v1.0.2"
+ui_print "| hfdem附加模块 v1.0.3"
 ui_print "| 作者：Jiuxia"
 ui_print "| 感谢 @温柔浩：原模块基础"
 ui_print "| 感谢 @Amktiao：5.15 内核优化（内核已内建）"

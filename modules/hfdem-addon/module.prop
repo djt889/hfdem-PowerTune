@@ -1,6 +1,6 @@
 id=hfdem_savemode
 name=hfdem附加模块
-version=v1.0.2
-versionCode=33
+version=v1.0.3
+versionCode=34
 author=Jiuxia
-description=hfdem附加模块 v1.0.2｜LZ4 + swappiness 60、安全回退、内存/网络/I/O/IRQ/LPM 优化；5.15 附加优化已内建于 hfdem 内核，本模块不再携带或加载第三方 KO；只读 WebUI 明确温度与内核内建状态，不含动态超频。感谢 @温柔浩 提供原模块基础，感谢 @Amktiao 提供 5.15 内核优化。
+description=hfdem附加模块 v1.0.3｜LZ4HC + swappiness 60、安全回退、内存/网络/I/O/IRQ/LPM 优化；5.15 附加优化已内建于 hfdem 内核，本模块不再携带或加载第三方 KO；只读 WebUI 明确温度与内核内建状态，不含动态超频。感谢 @温柔浩 提供原模块基础，感谢 @Amktiao 提供 5.15 内核优化。
