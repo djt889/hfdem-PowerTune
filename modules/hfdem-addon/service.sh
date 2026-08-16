@@ -218,10 +218,10 @@ init_zram_per() {
     zram_log_final_state
 }
 
-# 主策略固定标准 lz4；先做能力枚举，只有支持时才选择。
+# 主策略 zstdh（hfdem 定制 zstd）；先做能力枚举，只有支持时才选择。
 # 不支持时保守回退 zstd 或当前受支持算法，且回读验证通过后才 mkswap/swapon。
 init_zram() {
-    init_zram_per "0" "lz4hc"
+    init_zram_per "0" "zstdh"
 }
 
 # ============================================================

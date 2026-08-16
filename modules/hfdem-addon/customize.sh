@@ -20,7 +20,7 @@ fi
 
 ui_print " "
 ui_print "|=================================="
-ui_print "| hfdem附加模块 v1.0.3"
+ui_print "| hfdem附加模块 v1.0.4"
 ui_print "| 作者：Jiuxia"
 ui_print "| 感谢 @温柔浩：原模块基础"
 ui_print "| 感谢 @Amktiao：5.15 内核优化（内核已内建）"
